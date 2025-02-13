@@ -20,7 +20,7 @@ const uint JOYSTICK_BUTTON_PIN = 22;
 const uint LED_MATRIX_DATA_PIN = 7;  
 
 // Padrões para matriz de LED
-int matriz8[5][5][3] = {
+int matriz[5][5][3] = {
     {{0, 0, 0}, {0, 0, 0}, {2, 247, 47}, {0, 0, 0}, {0, 0, 0}},
     {{0, 0, 0}, {2, 247, 47}, {0, 0, 0}, {2, 247, 47}, {0, 0, 0}},
     {{2, 247, 47}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {2, 247, 47}},
@@ -28,7 +28,7 @@ int matriz8[5][5][3] = {
     {{0, 0, 0}, {2, 247, 47}, {0, 0, 0}, {2, 247, 47}, {0, 0, 0}}
 };
 
-int matriz10[5][5][3] = {
+int matriz2[5][5][3] = {
     {{0, 0, 0}, {0, 0, 0}, {247, 29, 2}, {0, 0, 0}, {0, 0, 0}},
     {{0, 0, 0}, {247, 29, 2}, {0, 0, 0}, {247, 29, 2}, {0, 0, 0}},
     {{247, 29, 2}, {0, 0, 0}, {0, 0, 0}, {0, 0, 0}, {247, 29, 2}},
@@ -47,21 +47,23 @@ typedef struct {
 // Array de questões
 Question questions[] = {
     {"8 x 9 = ?", "A: 72", "B: 81", 0},  
-    {"50 L 5 = ?", "A: 10", "B: 5", 0},  
-    {"50 L 5 = ?", "A: 10", "B: 5", 0},  
+    {"50 L 5 = ?", "A: 10", "B: 5", 0},   
     {"7 x 6 = ?", "A: 42", "B: 49", 0},  
     {"5 x 25 = ?", "A: 125", "B: 75", 0},
     {"6 x 7 = ?", "A: 42", "B: 52", 0},
     {"76 L 4 = ?", "A: 19", "B: 21", 0},
     {"4 x 6 = ?", "A: 24", "B: 28", 0},
-    {"Capital do Mexico", "A: Cid do Mexico", "B: Tihuana", 0},
-    {"Tubaroes sao carnivoros ", "A: Verdadeiro", "B: Falso", 0},
-    {"Maior animal do mundo", "A: Baleia azul", "B: Elefante", 0},
-    {"O Sol e uma estrela", "A: Verdadeiro", "B: Falso", 0}  
+    {"3 x 9 = ?", "A: 27", "B: 24", 0},
+    {"4 x 7 = ?", "A: 28", "B: 32", 0},
+    {"90 L 3 = ?", "A: 30", "B: 27", 0},
+    {"15 L 5 = ?", "A: 3", "B: 5", 0},
+    {"9 x 6 = ?", "A: 54", "B: 56", 0},
+    {"36 L 4 = ?", "A: 9", "B: 7", 0}
 };
 
 int total_questions = sizeof(questions) / sizeof(questions[0]);  
 int current_question = 0;  
+int correct_answers = 0;  // Counter para questões corretas
 
 // Configuração WS2812 PIO 
 PIO pio = pio0;
@@ -170,10 +172,11 @@ int main()
         if (!gpio_get(BUTTON_A_PIN)) {
             if (questions[current_question].correct_answer == 0) {
                 ssd1306_draw_string(ssd, 5, 48, "Correto!");
-                set_led_matrix_pattern(matriz10);  // Mostra o padrão de LED para acerto
+                correct_answers++;  // Increment correct answer counter
+                set_led_matrix_pattern(matriz2);  // Mostra o padrão de LED para acerto
             } else {
                 ssd1306_draw_string(ssd, 5, 48, "Incorreto!");
-                set_led_matrix_pattern(matriz8);  // Mostra o padrão de LED para errado
+                set_led_matrix_pattern(matriz);  // Mostra o padrão de LED para errado
             }
             render_on_display(ssd, &frame_area);
             sleep_ms(2000);  // Mostra a resposta por 2 segundos
@@ -191,10 +194,11 @@ int main()
         if (!gpio_get(BUTTON_B_PIN)) {
             if (questions[current_question].correct_answer == 1) {
                 ssd1306_draw_string(ssd, 5, 48, "Correto!");
-                set_led_matrix_pattern(matriz10);  // Mostra o padrão de LED para correto
+                correct_answers++;  // Increment correct answer counter
+                set_led_matrix_pattern(matriz2);  // Mostra o padrão de LED para correto
             } else {
                 ssd1306_draw_string(ssd, 5, 48, "Incorreto!");
-                set_led_matrix_pattern(matriz8);  // Mostra o padrão de LED para errado
+                set_led_matrix_pattern(matriz);  // Mostra o padrão de LED para errado
             }
             render_on_display(ssd, &frame_area);
             sleep_ms(2000);  // Mostra resposta por 2 segundos 
@@ -227,10 +231,17 @@ int main()
         // Checa o joystick (reseta para a primeira questão)
         if (!gpio_get(JOYSTICK_BUTTON_PIN)) {
             current_question = 0;  // Reseta para primeira questão
+            correct_answers = 0;  // Reseta o contador de respostas corretas
             memset(ssd, 0, ssd1306_buffer_length);  // Limpa o display
             render_on_display(ssd, &frame_area);
             sleep_ms(200);  // Debounce delay
         }
+
+        // Mostra no display quantas questões foram acertadas
+        char correct_answers_str[20];
+        snprintf(correct_answers_str, sizeof(correct_answers_str), "Correto: %d", correct_answers);
+        ssd1306_draw_string(ssd, 5, 48, correct_answers_str);
+        render_on_display(ssd, &frame_area);
 
         sleep_ms(100);  
     }
