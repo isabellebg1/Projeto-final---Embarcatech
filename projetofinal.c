@@ -93,7 +93,7 @@ void initialize_joystick() {
 void initialize_led_matrix() {
     // Inicialização WS2812 PIO 
     uint offset = pio_add_program(pio, &ws2812_program);
-    ws2812_program_init(pio, sm, offset, LED_MATRIX_DATA_PIN, 800000, false);  // Correct number of arguments
+    ws2812_program_init(pio, sm, offset, LED_MATRIX_DATA_PIN, 800000, false);  // Numero de argumentos
 }
 
 void set_led_matrix_pattern(int pattern[5][5][3]) {
