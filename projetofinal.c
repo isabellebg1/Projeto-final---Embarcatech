@@ -10,7 +10,7 @@
 #include "hardware/pio.h"
 #include "ws2812.pio.h"  
 
-const uint I2C_SDA = 14;
+const uint I2C_SDA = 14;   // Usando const para facilitar o debugging  
 const uint I2C_SCL = 15;
 const uint BUTTON_A_PIN = 5;  
 const uint BUTTON_B_PIN = 6;  
