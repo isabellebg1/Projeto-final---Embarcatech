@@ -1,4 +1,6 @@
 # Aventuras Embarcadas - Aprendendo Brincando - Aprendizado interativo utilizando técnicas de recordação ativa 
+![IMG_2987 (1)](https://github.com/user-attachments/assets/0896dbe0-79aa-4241-88e2-2344559fa2a9)
+![IMG_2984 (1)](https://github.com/user-attachments/assets/1405652e-9eb8-4c9a-9848-4a8528da75c7)
 
 
 # Introdução 
